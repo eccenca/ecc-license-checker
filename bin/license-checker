@@ -1,0 +1,69 @@
+#!/usr/bin/env node
+
+var commandLineCommands = require('command-line-commands');
+var commandLineArgs = require('command-line-args');
+
+var checker = require('../es5/index');
+
+var validCommands = [null, 'report', 'consolidate', 'yaml2json'];
+var clc = commandLineCommands(validCommands);
+var command = clc.command;
+var argv = clc.argv;
+
+switch (command) {
+case 'consolidate':
+    checker.consolidate(argv);
+    break;
+case 'report':
+    checker.report(argv);
+    break;
+case 'yaml2json':
+    checker.yaml2json(argv);
+    break;
+case null:
+default:
+    defaultCommand(argv);
+}
+
+
+// default command if
+function defaultCommand(argv) {
+
+    var cli = commandLineArgs([
+        {name: 'version', type: Boolean, description: 'Print version number'},
+        {name: 'help', type: Boolean, alias: 'h', description: 'Print help'}
+    ]);
+
+    var options = cli.parse(argv);
+
+    if (options.version) {
+        console.log(require('../package.json').version);
+    } else {
+
+        var ansi = require('ansi-escape-sequences');
+
+        var help = {
+            title: 'Eccenca License Checker',
+            description: 'Several Helper Tools for dealing with licenses of dependencies (especially javascript dependencies).',
+            synopsis: [
+                '$ license-checker [--help] [--version]',
+                '$ license-checker [command] [options]',
+                '$ license-checker [command] --help'
+            ]
+        };
+
+        help = cli.getUsage(help).concat([
+                '',
+                ansi.format('Commands', ['underline', 'bold']),
+                '',
+                'There are several useful commands, you should know about:',
+                '',
+                '\t' + ansi.format('report', ['bold']) + '\t\tCreate a report of currently installed npm production dependencies in yaml format',
+                '\t' + ansi.format('consolidate', ['bold']) + '\tConsolidate an existing report with currently installed dependencies',
+                '\t' + ansi.format('yaml2json', ['bold']) + '\tConvert a yaml report into a json report grouped by license',
+            ].join('\n')
+        );
+        console.log(help)
+    }
+
+}
