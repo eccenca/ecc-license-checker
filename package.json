@@ -22,7 +22,7 @@
     "ecc-gulp-tasks": "^2.0.2",
     "ecc-test-helpers": "^15.0.0"
   },
-  "main": "./lib/index.js",
+  "main": "./es5/index.js",
   "bin": {
     "ecc-license-checker": "./bin/license-checker"
   },
