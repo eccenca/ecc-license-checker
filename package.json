@@ -2,7 +2,7 @@
   "name": "ecc-license-checker",
   "description": "Check license info for a package",
   "author": "eccenca GmbH <opensource@eccenca.com> (http://eccenca.com)",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "dependencies": {
     "ansi-escape-sequences": "^2.2.2",
     "chalk": "^0.5.1",
@@ -22,7 +22,7 @@
     "ecc-gulp-tasks": "^2.0.2",
     "ecc-test-helpers": "^15.0.0"
   },
-  "main": "./lib/index.js",
+  "main": "./es5/index.js",
   "bin": {
     "ecc-license-checker": "./bin/license-checker"
   },
