@@ -2,10 +2,9 @@
   "name": "ecc-license-checker",
   "description": "Check license info for a package",
   "author": "eccenca GmbH <opensource@eccenca.com> (http://eccenca.com)",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "dependencies": {
     "ansi-escape-sequences": "^2.2.2",
-    "chalk": "^0.5.1",
     "clear": "0.0.1",
     "cli-table": "^0.3.1",
     "command-line-args": "^2.1.6",
@@ -37,6 +36,12 @@
   "license": "GPL-3.0",
   "repository": {
     "type": "git",
-    "url": "ssh://git@gitlab.eccenca.com:8101/elds-ui/ecc-license-checker.git"
+    "url": "https://github.com/elds/ecc-license-checker.git"
+  },
+  "bugs": {
+    "url": "https://github.com/elds/ecc-license-checker/issues"
+  },
+  "publishConfig": {
+    "registry": "http://registry.npmjs.org/"
   }
 }
