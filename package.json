@@ -2,7 +2,7 @@
   "name": "ecc-license-checker",
   "description": "Check license info for a package",
   "author": "eccenca GmbH <opensource@eccenca.com> (http://eccenca.com)",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "dependencies": {
     "ansi-escape-sequences": "^2.2.2",
     "clear": "0.0.1",
