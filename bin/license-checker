@@ -12,13 +12,13 @@ var argv = clc.argv;
 
 switch (command) {
 case 'consolidate':
-    checker.consolidate(argv);
+    checker.commands.consolidateCMD(argv);
     break;
 case 'report':
-    checker.report(argv);
+    checker.commands.reportCMD(argv);
     break;
 case 'yaml2json':
-    checker.yaml2json(argv);
+    checker.commands.yaml2jsonCMD(argv);
     break;
 case null:
 default:
