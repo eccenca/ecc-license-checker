@@ -14,6 +14,7 @@ describe('report functions', () => {
             (packageNames).should
                 .containEql('package-a')
                 .and.containEql('package-b')
+                .and.containEql('abbrev')
                 .and.not.containEql('package-dev');
 
             done();
