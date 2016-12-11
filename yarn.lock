@@ -3434,6 +3434,18 @@ license-checker@^5.1.2:
     read-installed "~4.0.3"
     treeify "^1.0.1"
 
+license-checker@^8.0.3:
+  version "8.0.3"
+  resolved "https://artifactory.eccenca.com/api/npm/npm/license-checker/-/license-checker-8.0.3.tgz#5662092e83673e045bbbdd1b428845cc6947984c"
+  dependencies:
+    chalk "~0.5.1"
+    debug "^2.2.0"
+    mkdirp "^0.3.5"
+    nopt "^2.2.0"
+    read-installed "~4.0.3"
+    semver "^5.3.0"
+    treeify "^1.0.1"
+
 liftoff@^2.1.0:
   version "2.3.0"
   resolved "https://artifactory.eccenca.com/api/npm/npm/liftoff/-/liftoff-2.3.0.tgz#a98f2ff67183d8ba7cfaca10548bd7ff0550b385"
@@ -5064,13 +5076,13 @@ sax@^1.1.4, sax@~1.2.1:
   version "1.2.1"
   resolved "https://artifactory.eccenca.com/api/npm/npm/sax/-/sax-1.2.1.tgz#7b8e656190b228e81a66aea748480d828cd2d37a"
 
-"semver@2 || 3 || 4 || 5", "semver@2.x || 3.x || 4 || 5", semver@~5.3.0:
-  version "5.3.0"
-  resolved "https://artifactory.eccenca.com/api/npm/npm/semver/-/semver-5.3.0.tgz#9b2ce5d3de02d17c6012ad326aa6b4d0cf54f94f"
-
-semver@^4.1.0:
+"semver@2 || 3 || 4 || 5", "semver@2.x || 3.x || 4 || 5", semver@^4.1.0:
   version "4.3.6"
   resolved "https://artifactory.eccenca.com/api/npm/npm/semver/-/semver-4.3.6.tgz#300bc6e0e86374f7ba61068b5b1ecd57fc6532da"
+
+semver@^5.3.0, semver@~5.3.0:
+  version "5.3.0"
+  resolved "https://artifactory.eccenca.com/api/npm/npm/semver/-/semver-5.3.0.tgz#9b2ce5d3de02d17c6012ad326aa6b4d0cf54f94f"
 
 send@0.14.1:
   version "0.14.1"
