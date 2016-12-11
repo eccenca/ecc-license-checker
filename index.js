@@ -9,7 +9,7 @@ const commands = {
     yaml2jsonCMD
 };
 
-export report from './lib/report';
+export {report} from './lib/report';
 
 export {yaml2json} from './lib/yaml2json';
 

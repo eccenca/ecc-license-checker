@@ -29,10 +29,10 @@ const dependencies = [
 
 describe('utility functions', () => {
     describe('excludeRepositories', () => {
-        
+
         const testFn1 = excludeRepositories.bind(null, /(gitlab.eccenca.com)|(github.com\/elds\/)/);
         const testFn2 = excludeRepositories.bind(null, /git@gitlab/);
-        
+
         it('should exclude eccenca dependencies (gitlab/gh)', () => {
             should(testFn1(dependencies[0])).be.true();
             should(testFn1(dependencies[1])).be.true();
