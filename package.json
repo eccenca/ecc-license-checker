@@ -4,11 +4,12 @@
   "author": "eccenca GmbH <opensource@eccenca.com> (http://eccenca.com)",
   "version": "2.3.0",
   "dependencies": {
-    "ansi-escape-sequences": "^2.2.2",
+    "babel-runtime": "^6.20.0",
     "clear": "0.0.1",
     "cli-table": "^0.3.1",
-    "command-line-args": "^2.1.6",
+    "command-line-args": "^3.0.4",
     "command-line-commands": "^1.0.2",
+    "command-line-usage": "^3.0.8",
     "inquirer": "^1.0.2",
     "js-yaml": "^3.5.2",
     "license-checker": "^5.1.2",
@@ -18,7 +19,7 @@
   },
   "devDependencies": {
     "ecc-dotfiles": "^1.4.1",
-    "ecc-gulp-tasks": "^2.0.2",
+    "ecc-gulp-tasks": "^3.0.0",
     "ecc-test-helpers": "^15.0.0"
   },
   "main": "./es5/index.js",
