@@ -82,18 +82,27 @@ export const cleanUpDependencies = (dependencies, {regex, warnings, color} = {})
             let lfc = false;
             let nfc = false;
 
-            const noticeFile = _.chain(fs.readdirSync(path, 'utf8'))
+            const dirList = _.chain(fs.readdirSync(path, 'utf8'))
+
+            const noticeFile = dirList
                 .filter((file) => /^notice/i.test(file))
                 .map((file) => join(path, file))
                 .first()
                 .value();
 
 
-            const licenseFile = _.chain(fs.readdirSync(path, 'utf8'))
+            const licenseFile = dirList
                 .filter((file) => /^license/i.test(file))
                 .map((file) => join(path, file))
                 .first()
                 .value();
+
+            const additionalLicenses = dirList
+                .filter((file) => /^additionalLicenses\.yml/i.test(file))
+                .map((file) => join(path, file))
+                .first()
+                .value();
+
 
             if (_.isString(noticeFile)) {
                 nfc = getContentsSync(noticeFile);
@@ -103,17 +112,15 @@ export const cleanUpDependencies = (dependencies, {regex, warnings, color} = {})
                 lfc = getContentsSync(licenseFile);
             }
 
-            try {
-                var pjson = JSON.parse(getContentsSync(join(path, 'package.json')));
+            if (_.isString(additionalLicenses)) {
 
-                if (pjson.licenseAdditions) {
-                    var additionalLicenses = loadReportFromFile(join(path, pjson.licenseAdditions), true);
-                    additions = _.concat(additions, additionalLicenses.dependencies);
-                    console.warn(additions);
+                try {
+                    const {dependencies} = loadReportFromFile(additionalLicenses, true);
+                    additions = _.concat(additions, dependencies);
+                } catch (e) {
+                    console.warn(e);
                 }
 
-            } catch (e) {
-                console.warn(e);
             }
 
             return {

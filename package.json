@@ -18,9 +18,12 @@
     "spdx": "^0.5.1"
   },
   "devDependencies": {
-    "ecc-dotfiles": "^1.4.1",
-    "ecc-gulp-tasks": "^3.0.0",
-    "ecc-test-helpers": "^15.0.0"
+    "babel-cli": "^6.18.0",
+    "babel-preset-eccenca": "^1.0.3",
+    "babel-register": "^6.18.0",
+    "ecc-dotfiles": "^1.9.1",
+    "mocha": "^3.2.0",
+    "should": "^11.1.2"
   },
   "main": "./es5/index.js",
   "bin": {
@@ -28,8 +31,8 @@
   },
   "scripts": {
     "init": "ecc-link-dotfiles",
-    "build": "gulp build",
-    "test": "gulp test",
+    "build": "babel src -d lib",
+    "test": "mocha --compilers js:babel-register",
     "download-spdx": "curl 'https://spdx.org/licenses/licenses.json' --no-buffer > temp.json",
     "spdx": "npm run download-spdx && jq . temp.json > data/licenses.json && rm -f temp.json",
     "prepublish": "npm run init && npm run test && npm run build"

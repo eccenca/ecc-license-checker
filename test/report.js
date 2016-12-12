@@ -1,9 +1,11 @@
-import should from 'ecc-test-helpers';
+import should from 'should';
 
 import _ from 'lodash';
 
-import {report} from '../index';
+import {report} from '../src/report';
+
 import path from 'path';
+
 describe('report functions', () => {
     it('successful report', (done) => {
 
@@ -11,7 +13,7 @@ describe('report functions', () => {
 
             const packageNames = _.map(result, 'name');
 
-            (packageNames).should
+            should(packageNames)
                 .containEql('package-a')
                 .and.containEql('package-b')
                 .and.containEql('abbrev')

@@ -1,6 +1,6 @@
-import should from 'ecc-test-helpers';
+import should from 'should';
 
-import {excludeRepositories, checkDependency} from '../lib/util';
+import {excludeRepositories, checkDependency} from '../src/util';
 
 const dependencies = [
     {

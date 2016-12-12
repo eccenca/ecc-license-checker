@@ -29,3 +29,5 @@ ui-test/*.svg
 .idea/
 
 #END
+
+lib/
