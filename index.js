@@ -15,7 +15,7 @@ module.exports = {
     spdxLicenseList: _spdxList.spdxLicenseList,
     commands: {
         reportCMD: _report.default,
-        consolidateCMD: _consolidate.default,
+        consolidateCMD: _consolidate,
         yaml2jsonCMD: _yaml2json.default
     }
 };

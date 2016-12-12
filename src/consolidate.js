@@ -315,7 +315,7 @@ const consolidate = ({inputFile, outputFile}) => {
 
 };
 
-export default (argv) => {
+export default () => {
 
     var args = [
         {
