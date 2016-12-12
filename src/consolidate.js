@@ -317,7 +317,7 @@ const consolidate = ({inputFile, outputFile}) => {
 
 export default (argv) => {
 
-    var cli = commandLineArgs([
+    var args = [
         {
             name: 'inputFile',
             type: String,
@@ -335,21 +335,35 @@ export default (argv) => {
             description: 'Output file (YAML format, does not need to exist)'
         },
         {name: 'help', alias: 'h', description: 'Print help', type: Boolean}
-    ]);
+    ];
 
-    var {help, outputFile, inputFile} = cli.parse(argv);
+    var options = commandLineArgs(args);
+
+    var {help, outputFile, inputFile} = options;
 
     if (help) {
 
-        var helpMessage = {
-            title: 'Eccenca License Checker (consolidate)',
-            description: 'Check if a consolidated report is up to date with a newly generated report.',
-            synopsis: [
-                '$ license-checker consolidate [--help] --input=<path> --output=<path>'
-            ]
-        };
+        var getUsage = require('command-line-usage');
 
-        console.log(cli.getUsage(helpMessage));
+        var sections = [
+            {
+                header: 'Eccenca License Checker (consolidate)',
+                content: 'Check if a consolidated report is up to date with a newly generated report.'
+            },
+            {
+                header: 'Synopsis',
+                content: [
+                    '$ license-checker consolidate [--help] --input=<path> --output=<path>',
+                ]
+            },
+            {
+                header: 'Options',
+                optionList: args
+            },
+        ];
+
+        console.log(getUsage(sections));
+
     } else {
 
         if (!inputFile) {

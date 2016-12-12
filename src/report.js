@@ -1,4 +1,3 @@
-
 import fs from 'fs';
 import {join, dirname} from 'path';
 
@@ -38,7 +37,8 @@ export const report = ({directory, warnings}, cb) => {
         production: true,
         development: false,
         color: false
-    }, (dependencies, err) => {
+    }, (err, dependencies) => {
+
         if (err) {
             throw new Error(err);
         }
@@ -51,9 +51,10 @@ export const report = ({directory, warnings}, cb) => {
 
 };
 
-export default (argv) => {
+export default () => {
 
-    var cli = commandLineArgs([
+    const args = [
+        {name: 'help', alias: 'h', description: 'Print help', type: Boolean},
         {
             name: 'directory',
             type: String,
@@ -79,24 +80,32 @@ export default (argv) => {
             defaultValue: 'javascript',
             description: 'Project Language (default: javascript)'
         },
-        {name: 'help', alias: 'h', description: 'Print help', type: Boolean}
-    ]);
+    ];
 
-    var options = cli.parse(argv);
+    const options = commandLineArgs(args);
 
     if (options.help) {
 
-        var help = {
-            title: 'Eccenca License Checker (report)',
-            description: 'Generate a license report from a node project with installed dependencies.',
-            synopsis: [
-                '$ license-checker report [--help] [--directory[=<path>]] ' +
-                '[--output=<path>] [--color] [--warnings] ' +
-                '[--title] [--description] [--language]'
-            ]
-        };
+        var getUsage = require('command-line-usage');
 
-        console.log(cli.getUsage(help));
+        var sections = [
+            {
+                header: 'Eccenca License Checker (report)',
+                content: 'Generate a license report from a node project with installed dependencies.'
+            },
+            {
+                header: 'Synopsis',
+                content: [
+                    '$ license-checker report [--help] [--directory[=<path>]] [--output=<path>] [--color] [--warnings] [--title] [--description] [--language]',
+                ]
+            },
+            {
+                header: 'Options',
+                optionList: args
+            },
+        ];
+
+        console.log(getUsage(sections));
     } else {
 
         const {title, description, language} = options;

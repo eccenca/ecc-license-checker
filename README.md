@@ -1,5 +1,4 @@
-ecc-license-checker
-===================
+# ecc-license-checker
 
 This tool enables you to manage the licenses of your npm dependencies easily.
  

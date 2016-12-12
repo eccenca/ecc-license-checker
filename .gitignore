@@ -8,11 +8,9 @@
 # node && npm
 node_modules/
 npm-debug.log
+yarn-error.log
 
 # ignore symlinks
-.babelrc
-.editorconfig
-.eslintrc.yml
 Makefile
 
 # ignore coverage report
@@ -31,3 +29,5 @@ ui-test/*.svg
 .idea/
 
 #END
+
+lib/

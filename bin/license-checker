@@ -3,7 +3,7 @@
 var commandLineCommands = require('command-line-commands');
 var commandLineArgs = require('command-line-args');
 
-var checker = require('../es5/index');
+var checker = require('../index');
 
 var validCommands = [null, 'report', 'consolidate', 'yaml2json'];
 var clc = commandLineCommands(validCommands);
@@ -22,48 +22,65 @@ case 'yaml2json':
     break;
 case null:
 default:
-    defaultCommand(argv);
+    defaultCommand();
 }
 
 
 // default command if
-function defaultCommand(argv) {
+function defaultCommand() {
 
-    var cli = commandLineArgs([
+    var args = [
         {name: 'version', type: Boolean, description: 'Print version number'},
         {name: 'help', type: Boolean, alias: 'h', description: 'Print help'}
-    ]);
+    ];
 
-    var options = cli.parse(argv);
+    var options = commandLineArgs(args);
 
     if (options.version) {
         console.log(require('../package.json').version);
     } else {
 
-        var ansi = require('ansi-escape-sequences');
+        var getUsage = require('command-line-usage');
 
-        var help = {
-            title: 'Eccenca License Checker',
-            description: 'Several Helper Tools for dealing with licenses of dependencies (especially javascript dependencies).',
-            synopsis: [
-                '$ license-checker [--help] [--version]',
-                '$ license-checker [command] [options]',
-                '$ license-checker [command] --help'
-            ]
-        };
+        var sections = [
+            {
+                header: 'Eccenca License Checker',
+                content: 'Several Helper Tools for dealing with licenses of dependencies (especially javascript dependencies).'
+            },
+            {
+                header: 'Synopsis',
+                content: [
+                    '$ license-checker [--help] [--version]',
+                    '$ license-checker [command] [options]',
+                    '$ license-checker [command] --help'
+                ]
+            },
+            {
+                header: 'Options',
+                optionList: args
+            },
+            {
+                header: 'Commands',
+                content: [
+                    {
+                        colA: '[bold]{report}',
+                        colB: 'Create a report of currently installed npm production dependencies in yaml format.'
+                    },
+                    {
+                        colA: '[bold]{consolidate}',
+                        colB: 'Consolidate an existing report with currently installed dependencies.'
+                    },
+                    {
+                        colA: '[bold]{yaml2json}',
+                        colB: 'Convert a yaml report into a json report grouped by license'
+                    },
+                ],
+            }
+        ];
 
-        help = cli.getUsage(help).concat([
-                '',
-                ansi.format('Commands', ['underline', 'bold']),
-                '',
-                'There are several useful commands, you should know about:',
-                '',
-                '\t' + ansi.format('report', ['bold']) + '\t\tCreate a report of currently installed npm production dependencies in yaml format',
-                '\t' + ansi.format('consolidate', ['bold']) + '\tConsolidate an existing report with currently installed dependencies',
-                '\t' + ansi.format('yaml2json', ['bold']) + '\tConvert a yaml report into a json report grouped by license',
-            ].join('\n')
-        );
-        console.log(help)
+        var usage = getUsage(sections);
+        console.log(usage)
+
     }
 
 }

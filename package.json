@@ -2,24 +2,28 @@
   "name": "ecc-license-checker",
   "description": "Check license info for a package",
   "author": "eccenca GmbH <opensource@eccenca.com> (http://eccenca.com)",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "dependencies": {
-    "ansi-escape-sequences": "^2.2.2",
+    "babel-runtime": "^6.20.0",
     "clear": "0.0.1",
     "cli-table": "^0.3.1",
-    "command-line-args": "^2.1.6",
+    "command-line-args": "^3.0.4",
     "command-line-commands": "^1.0.2",
+    "command-line-usage": "^3.0.8",
     "inquirer": "^1.0.2",
     "js-yaml": "^3.5.2",
-    "license-checker": "^5.1.2",
+    "license-checker": "^8.0.3",
     "lodash": "^4.2.1",
     "mkdirp": "^0.5.1",
     "spdx": "^0.5.1"
   },
   "devDependencies": {
-    "ecc-dotfiles": "^1.4.1",
-    "ecc-gulp-tasks": "^2.0.2",
-    "ecc-test-helpers": "^15.0.0"
+    "babel-cli": "^6.18.0",
+    "babel-preset-eccenca": "^1.0.3",
+    "babel-register": "^6.18.0",
+    "ecc-dotfiles": "^1.9.1",
+    "mocha": "^3.2.0",
+    "should": "^11.1.2"
   },
   "main": "./es5/index.js",
   "bin": {
@@ -27,8 +31,8 @@
   },
   "scripts": {
     "init": "ecc-link-dotfiles",
-    "build": "gulp build",
-    "test": "gulp test",
+    "build": "babel src -d lib",
+    "test": "mocha --compilers js:babel-register",
     "download-spdx": "curl 'https://spdx.org/licenses/licenses.json' --no-buffer > temp.json",
     "spdx": "npm run download-spdx && jq . temp.json > data/licenses.json && rm -f temp.json",
     "prepublish": "npm run init && npm run test && npm run build"

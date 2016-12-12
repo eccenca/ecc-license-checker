@@ -55,56 +55,72 @@ export const getURL = (module) => {
     return module;
 };
 
+const getContentsSync = (file) => {
+    try {
+        const stats = fs.statSync(file);
+        if (stats.isFile()) {
+
+            return fs.readFileSync(file, 'utf8');
+        }
+    } catch (e) {
+        console.warn(e, file);
+    }
+    return false;
+};
+
 export const cleanUpDependencies = (dependencies, {regex, warnings, color} = {}) => {
 
     regex = /(gitlab.eccenca.com)|(github.com\/elds\/)/;
 
+    var additions = [];
+
     dependencies = _.chain(dependencies)
-        .reject(excludeRepositories.bind(null, regex))
         .map(validateSPDX)
         .map(getURL)
-        .map(({name, version, url, license, licenses, path}) => {
+        .map(({name, version, url, license, licenses, path, repository}) => {
 
             let lfc = false;
             let nfc = false;
 
-            const noticeFile = _.chain(fs.readdirSync(path, 'utf8'))
+            const dirList = _.chain(fs.readdirSync(path, 'utf8'))
+
+            const noticeFile = dirList
                 .filter((file) => /^notice/i.test(file))
                 .map((file) => join(path, file))
                 .first()
                 .value();
 
 
-            const licenseFile = _.chain(fs.readdirSync(path, 'utf8'))
+            const licenseFile = dirList
                 .filter((file) => /^license/i.test(file))
                 .map((file) => join(path, file))
                 .first()
                 .value();
 
+            const additionalLicenses = dirList
+                .filter((file) => /^additionalLicenses\.yml/i.test(file))
+                .map((file) => join(path, file))
+                .first()
+                .value();
+
+
             if (_.isString(noticeFile)) {
-                try {
-                    const stats = fs.statSync(noticeFile);
-                    if (stats.isFile()) {
-                        nfc = fs.readFileSync(noticeFile, 'utf8');
-
-                        nfc = `---\n${nfc}`;
-
-                    }
-                } catch (e) {
-                    console.warn(e, noticeFile);
-                }
+                nfc = getContentsSync(noticeFile);
             }
 
             if (_.isString(licenseFile)) {
+                lfc = getContentsSync(licenseFile);
+            }
+
+            if (_.isString(additionalLicenses)) {
+
                 try {
-                    const stats = fs.statSync(licenseFile);
-                    if (stats.isFile()) {
-                        lfc = fs.readFileSync(licenseFile, 'utf8');
-                        lfc = `---\n${lfc}`;
-                    }
+                    const {dependencies} = loadReportFromFile(additionalLicenses, true);
+                    additions = _.concat(additions, dependencies);
                 } catch (e) {
-                    console.warn(e, licenseFile);
+                    console.warn(e);
                 }
+
             }
 
             return {
@@ -114,9 +130,15 @@ export const cleanUpDependencies = (dependencies, {regex, warnings, color} = {})
                 guessedLicense: licenses,
                 licenseFile: lfc,
                 noticeFile: nfc,
-                url
+                url,
+                repository,
             };
+
         })
+        .thru(function(value) {
+            return _.concat(value, additions)
+        })
+        .reject(excludeRepositories.bind(null, regex))
         .sortBy('name', 'version')
         .value();
 
@@ -140,9 +162,9 @@ export const loadReportFromFile = (file, failOkay = false, options = {}) => {
     } catch (e) {
         throw new Error(`Could not load ${file}`);
     }
-    
+
     return loadReportFromYAML(file);
-    
+
 };
 
 export const loadReportFromYAML = (yamlString) => {
