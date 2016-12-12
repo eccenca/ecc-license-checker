@@ -8,7 +8,8 @@
   "dependencies": {
     "package-a": "1.0.0",
     "package-b": "3.0.0",
-    "package-eccenca": "2.0.0"
+    "package-eccenca": "2.0.0",
+    "package-license": "2.0.0"
   },
   "devDependencies": {
     "package-dev": "1.0.0"

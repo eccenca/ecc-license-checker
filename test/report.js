@@ -17,6 +17,7 @@ describe('report functions', () => {
                 .containEql('package-a')
                 .and.containEql('package-b')
                 .and.containEql('abbrev')
+                .and.containEql('package-license')
                 .and.not.containEql('package-dev');
 
             done();
