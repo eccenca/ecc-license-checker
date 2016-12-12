@@ -12,7 +12,7 @@ import inquirer from 'inquirer';
 
 const propsWhitelist = ['name', 'version', 'url', 'spdx', 'licenses', 'notices', 'noticeFile', 'licenseFile'];
 
-import {loadReportFromFile} from './util';
+import {loadReportFromFile, formatResultObject} from './util';
 
 const replacePrompt = (deleteCandidate, replacementCandidates) => {
 
@@ -198,21 +198,9 @@ const addPrompt = (additionCandidate) => {
 
 const dumpFile = (dependencies, {location, project, language, description}) => {
 
-    var result = {};
+    const result = formatResultObject(dependencies, {title: project, description, language});
 
-    dependencies = _.chain(dependencies)
-        .filter(_.isObject)
-        .sortBy(['name', 'version'])
-        .value();
-
-    result[project] = {
-        language,
-        description,
-        dependencies
-    };
-
-    result[project]['dependencies'] = dependencies;
-    fs.writeFileSync(location, yaml.safeDump(result, {skipInvalid: true, sortKeys: true}), 'utf8');
+    fs.writeFileSync(location, yaml.safeDump(result, {skipInvalid: true}), 'utf8');
     clear();
     console.log('Wrote changes to', location);
     console.log('\n');

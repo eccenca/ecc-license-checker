@@ -2,6 +2,23 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/) and [Keep A Changelog's Format](http://keepachangelog.com/).
 
+## [Unreleased]
+### Fixed
+- yaml dumps are now sorted in a fixed order:
+```yaml
+DataManager:
+  description: ...
+  language: ...
+  dependencies:
+    - name: argparse
+      version: 1.0.9
+      url: 'https://github.com/nodeca/argparse'
+      spdx: MIT
+      # OtherProperties
+      licenseFile: ...
+      noticeFile: ...
+```
+
 ## [2.5.0] 2016-12-12
 ### Changed
 - yaml dumps are now always sorted alphabetically
