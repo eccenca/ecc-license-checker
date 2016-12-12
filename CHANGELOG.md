@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/) and [Keep A Changelog's Format](http://keepachangelog.com/).
 
+## [2.5.0] 2016-12-12
+### Changed
+- yaml dumps are now always sorted alphabetically
+
 ## [2.4.2] 2016-12-12
 ### Fixed
 - Licenses with leading whitespaces will no be reported correctly
