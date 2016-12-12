@@ -60,7 +60,7 @@ const getContentsSync = (file) => {
         const stats = fs.statSync(file);
         if (stats.isFile()) {
 
-            return fs.readFileSync(file, 'utf8');
+            return `---\n${fs.readFileSync(file, 'utf8')}`;
         }
     } catch (e) {
         console.warn(e, file);
