@@ -114,7 +114,7 @@ export default () => {
 
             dependencies = formatResultObject(dependencies, {title, description, language});
 
-            dependencies = yaml.safeDump(dependencies, {skipInvalid: true});
+            dependencies = yaml.safeDump(dependencies, {skipInvalid: true, sortKeys: true});
 
             if (options.output) {
                 var path = require('path');

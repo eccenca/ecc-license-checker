@@ -170,7 +170,7 @@ const addPrompt = (additionCandidate) => {
 
             console.log('---');
 
-            console.log(yaml.safeDump(newEntry, {skipInvalid: true}));
+            console.log(yaml.safeDump(newEntry, {skipInvalid: true, sortKeys: true}));
 
             console.log('---');
 
@@ -212,7 +212,7 @@ const dumpFile = (dependencies, {location, project, language, description}) => {
     };
 
     result[project]['dependencies'] = dependencies;
-    fs.writeFileSync(location, yaml.safeDump(result, {skipInvalid: true}), 'utf8');
+    fs.writeFileSync(location, yaml.safeDump(result, {skipInvalid: true, sortKeys: true}), 'utf8');
     clear();
     console.log('Wrote changes to', location);
     console.log('\n');
