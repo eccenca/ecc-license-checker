@@ -11,30 +11,30 @@ import {spdxLicenseList} from './spdx-list';
 const groupDependencies = (dependencies) => {
 
     return _.chain(dependencies)
-        .reduce((result, {spdx = 'xCUSTOMx', licenses, name, url}) => {
+        .reduce((result, {spdx = false, licenses, name, url}) => {
 
-            if (!_.has(result, spdx)) {
+            let licenseUrl, licenseName;
 
-                let licenseUrl, licenseName;
+            if(!spdx || _.startsWith(spdx, '(')) {
+                licenseName = _.first(licenses).name;
+                licenseUrl = _.first(licenses).url;
+            } else if(_.startsWith(spdx, '(')) {
+                licenseName = spdx;
+                licenseUrl = _.first(licenses).url;
+            } else {
+                licenseName = _.find(spdxLicenseList, {licenseId: spdx}).name;
+                licenseUrl = `https://spdx.org/licenses/${spdx}.html`;
+            }
 
-                if (spdx === 'xCUSTOMx' || _.startsWith(spdx, '(')) {
-                    licenseUrl = _.first(licenses).url;
-                    licenseName = _.first(licenses).name;
-                    spdx = licenseName;
-                } else {
-                    const spdxLicense = _.find(spdxLicenseList, {licenseId: spdx});
-                    licenseUrl = `https://spdx.org/licenses/${spdx}.html`;
-                    licenseName = spdxLicense.name;
-                }
-
-                result[spdx] = {
+            if (!_.has(result, licenseName)) {
+                result[licenseName] = {
                     name: licenseName,
                     url: licenseUrl,
                     pkgs: []
                 }
             }
 
-            let pkgs = _.get(result, [spdx, 'pkgs']);
+            let pkgs = _.get(result, [licenseName, 'pkgs']);
 
             pkgs = _.chain(pkgs)
                 .concat({name, url})
@@ -42,7 +42,7 @@ const groupDependencies = (dependencies) => {
                 .uniqBy('name')
                 .value();
 
-            _.set(result, [spdx, 'pkgs'], pkgs);
+            _.set(result, [licenseName, 'pkgs'], pkgs);
 
             return result;
 

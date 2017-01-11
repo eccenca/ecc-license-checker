@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/) and [Keep A Changelog's Format](http://keepachangelog.com/).
 
+## [Unreleased]
+### Fixed
+- `consolidate` allows downloadUrl and copies all fields if possible from input file
+- `yaml2json` now converts yaml correctly to json
+
 ## [2.5.1] 2016-12-12
 ### Fixed
 - yaml dumps are now sorted in a fixed order:
