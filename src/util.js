@@ -5,23 +5,25 @@ import _ from 'lodash';
 import spdx from 'spdx';
 import yaml from 'js-yaml';
 
+export const formatDependency = ({name, version, url, spdx, licenseFile, noticeFile, ...otherProps}) => {
+    return {
+        name,
+        version,
+        url,
+        spdx,
+        ...otherProps,
+        licenseFile,
+        noticeFile,
+    };
+};
+
 export const formatResultObject = (dependencies, {title, description, language}) => {
     const result = {};
 
     let deps = _.chain(dependencies)
         .filter(_.isObject)
         .sortBy(['name', 'version'])
-        .map(({name, version, url, spdx, licenseFile, noticeFile, ...otherProps}) => {
-            return {
-                name,
-                version,
-                url,
-                spdx,
-                ...otherProps,
-                licenseFile,
-                noticeFile,
-            }
-        })
+        .map(formatDependency)
         .value();
 
     result[title] = {

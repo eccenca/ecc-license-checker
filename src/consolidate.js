@@ -10,9 +10,9 @@ import commandLineArgs from 'command-line-args';
 
 import inquirer from 'inquirer';
 
-const propsWhitelist = ['name', 'version', 'url', 'spdx', 'licenses', 'notices', 'noticeFile', 'licenseFile'];
+const propsWhitelist = ['name', 'version', 'url', 'spdx', 'licenses', 'notices', 'noticeFile', 'licenseFile', 'downloadUrl'];
 
-import {loadReportFromFile, formatResultObject} from './util';
+import {loadReportFromFile, formatResultObject, formatDependency} from './util';
 
 const replacePrompt = (deleteCandidate, replacementCandidates) => {
 
@@ -75,12 +75,13 @@ const replacePrompt = (deleteCandidate, replacementCandidates) => {
 
 const addPrompt = (additionCandidate) => {
 
-    const {name, version, url, noticeFile, guessedLicense = '---', spdx = '---', licenseFile = false} = additionCandidate;
+    const {name, version, url, noticeFile, guessedLicense = '---', spdx = '---', licenseFile = false, ...otherProps} = additionCandidate;
 
     const newEntry = {
         name,
         version,
-        url
+        url,
+        ...otherProps,
     };
 
     var message = '';
@@ -170,7 +171,7 @@ const addPrompt = (additionCandidate) => {
 
             console.log('---');
 
-            console.log(yaml.safeDump(newEntry, {skipInvalid: true, sortKeys: true}));
+            console.log(yaml.safeDump(formatDependency(newEntry), {skipInvalid: true}));
 
             console.log('---');
 
@@ -207,7 +208,6 @@ const dumpFile = (dependencies, {location, project, language, description}) => {
 };
 
 const curateList = ({removed, added, curatedDependencies}, file)=> {
-
 
     if (_.size(removed) > 0) {
 
