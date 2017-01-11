@@ -2,7 +2,7 @@
   "name": "ecc-license-checker",
   "description": "Check license info for a package",
   "author": "eccenca GmbH <opensource@eccenca.com> (http://eccenca.com)",
-  "version": "2.5.1",
+  "version": "2.5.2",
   "dependencies": {
     "babel-runtime": "^6.20.0",
     "clear": "0.0.1",
