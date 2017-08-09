@@ -19,10 +19,19 @@
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
+    "babel-eslint": "^7.2.3",
     "babel-preset-eccenca": "^2.0.1",
     "babel-register": "^6.24.1",
     "ecc-dotfiles": "^2.1.0",
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb": "^15.1.0",
+    "eslint-config-prettier": "^2.3.0",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-jsx-a11y": "^5.1.1",
+    "eslint-plugin-prettier": "^2.1.2",
+    "eslint-plugin-react": "^7.1.0",
     "mocha": "^3.5.0",
+    "prettier": "^1.5.3",
     "should": "^11.2.1"
   },
   "main": "./es5/index.js",
@@ -33,6 +42,7 @@
     "init": "ecc-link-dotfiles",
     "build": "babel src -d lib",
     "test": "mocha --compilers js:babel-register",
+    "lint": "eslint --ignore-path .gitignore '**/*/*.js' --fix",
     "download-spdx": "curl 'https://spdx.org/licenses/licenses.json' --no-buffer > temp.json",
     "spdx": "npm run download-spdx && jq . temp.json > data/licenses.json && rm -f temp.json",
     "prepublish": "npm run init && npm run test && npm run build"
