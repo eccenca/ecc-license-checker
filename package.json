@@ -4,26 +4,26 @@
   "author": "eccenca GmbH <opensource@eccenca.com> (http://eccenca.com)",
   "version": "2.5.2",
   "dependencies": {
-    "babel-runtime": "^6.20.0",
+    "babel-runtime": "^6.25.0",
     "clear": "0.0.1",
     "cli-table": "^0.3.1",
     "command-line-args": "^3.0.4",
     "command-line-commands": "^1.0.2",
     "command-line-usage": "^3.0.8",
     "inquirer": "^1.0.2",
-    "js-yaml": "^3.5.2",
+    "js-yaml": "^3.9.1",
     "license-checker": "^8.0.3",
-    "lodash": "^4.2.1",
+    "lodash": "^4.17.4",
     "mkdirp": "^0.5.1",
     "spdx": "^0.5.1"
   },
   "devDependencies": {
-    "babel-cli": "^6.18.0",
-    "babel-preset-eccenca": "^1.0.3",
-    "babel-register": "^6.18.0",
-    "ecc-dotfiles": "^1.9.1",
-    "mocha": "^3.2.0",
-    "should": "^11.1.2"
+    "babel-cli": "^6.24.1",
+    "babel-preset-eccenca": "^2.0.1",
+    "babel-register": "^6.24.1",
+    "ecc-dotfiles": "^2.1.0",
+    "mocha": "^3.5.0",
+    "should": "^11.2.1"
   },
   "main": "./es5/index.js",
   "bin": {
