@@ -4,9 +4,10 @@ This project adheres to [Semantic Versioning](http://semver.org/) and [Keep A Ch
 
 ## [Unreleased]
 
-TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
+### Changed
+- Update spdx license list to version 2.6
 
-## [2.5.2] 2017-01-11 
+## [2.5.2] 2017-01-11
 ### Fixed
 - `consolidate` allows downloadUrl and copies all fields if possible from input file
 - `yaml2json` now converts yaml correctly to json
@@ -42,7 +43,7 @@ DataManager:
 
 ## [2.4.0] 2016-12-12
 ### Added
-- possibility to provide a `additionalLicenses.yml` file which will be merged into the report 
+- possibility to provide a `additionalLicenses.yml` file which will be merged into the report
 
 ### Changed
 - Updated dependencies
