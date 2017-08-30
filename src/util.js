@@ -44,9 +44,11 @@ export const formatResultObject = (
     return result;
 };
 
-export const excludeRepositories = (excludeRepositoryRegex, module) =>
-    _.isString(module.repository) &&
-    excludeRepositoryRegex.test(module.repository);
+export const excludeRepositories = (excludeRepositoryRegex, module) => {
+    const repository = _.get(module, 'repository.url', module.repository);
+
+    return _.isString(repository) && excludeRepositoryRegex.test(repository);
+};
 
 export const checkDependency = module => {
     const {name, version} = module;
@@ -71,7 +73,7 @@ export const validateSPDX = module => {
 export const getURL = module => {
     const {name, homepage, repository} = module;
 
-    let url = homepage || repository;
+    let url = homepage || _.get(repository, 'url', repository);
 
     if (!_.isString(url) || _.isEmpty(url)) {
         url = `https://www.npmjs.com/package/${name}`;
