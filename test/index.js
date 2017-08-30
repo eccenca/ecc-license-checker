@@ -1,4 +1,2 @@
-
-
 require('./utils');
 require('./report');

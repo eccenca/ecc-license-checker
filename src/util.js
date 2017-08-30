@@ -2,25 +2,34 @@ import fs from 'fs';
 import {join} from 'path';
 
 import _ from 'lodash';
-import spdx from 'spdx';
+import {valid as validSPDX} from 'spdx';
 import yaml from 'js-yaml';
 
-export const formatDependency = ({name, version, url, spdx, licenseFile, noticeFile, ...otherProps}) => {
-    return {
-        name,
-        version,
-        url,
-        spdx,
-        ...otherProps,
-        licenseFile,
-        noticeFile,
-    };
-};
+export const formatDependency = ({
+    name,
+    version,
+    url,
+    spdx,
+    licenseFile,
+    noticeFile,
+    ...otherProps
+}) => ({
+    name,
+    version,
+    url,
+    spdx,
+    ...otherProps,
+    licenseFile,
+    noticeFile,
+});
 
-export const formatResultObject = (dependencies, {title, description, language}) => {
+export const formatResultObject = (
+    dependencies,
+    {title, description, language}
+) => {
     const result = {};
 
-    let deps = _.chain(dependencies)
+    const deps = _.chain(dependencies)
         .filter(_.isObject)
         .sortBy(['name', 'version'])
         .map(formatDependency)
@@ -35,31 +44,31 @@ export const formatResultObject = (dependencies, {title, description, language})
     return result;
 };
 
-export const excludeRepositories = (excludeRepositoryRegex, module) => _.isString(module.repository) && excludeRepositoryRegex.test(module.repository)
+export const excludeRepositories = (excludeRepositoryRegex, module) =>
+    _.isString(module.repository) &&
+    excludeRepositoryRegex.test(module.repository);
 
-export const checkDependency = (module) => {
+export const checkDependency = module => {
     const {name, version} = module;
-    if (!_.isString(name) || isEmpty(name)) {
+    if (!_.isString(name) || _.isEmpty(name)) {
         throw new Error('Name is missing');
     }
-    if (!_.isString(version) || isEmpty(version)) {
+    if (!_.isString(version) || _.isEmpty(version)) {
         throw new Error(`Module [${name}]: Version is missing`);
     }
 };
 
-export const validateSPDX = (module) => {
+export const validateSPDX = module => {
     const {license} = module;
 
-    if (_.isString(license) && spdx.valid(license)) {
-        module.spdx = license;
+    if (_.isString(license) && validSPDX(license)) {
+        return {...module, spdx: license};
     }
 
     return module;
-
 };
 
-export const getURL = (module) => {
-
+export const getURL = module => {
     const {name, homepage, repository} = module;
 
     let url = homepage || repository;
@@ -68,16 +77,13 @@ export const getURL = (module) => {
         url = `https://www.npmjs.com/package/${name}`;
     }
 
-    module.url = url;
-
-    return module;
+    return {...module, url};
 };
 
-const getContentsSync = (file) => {
+const getContentsSync = file => {
     try {
         const stats = fs.statSync(file);
         if (stats.isFile()) {
-
             return `---\n${fs.readFileSync(file, 'utf8')}`;
         }
     } catch (e) {
@@ -86,41 +92,38 @@ const getContentsSync = (file) => {
     return false;
 };
 
-export const cleanUpDependencies = (dependencies, {regex, warnings, color} = {}) => {
+export const cleanUpDependencies = dependencies => {
+    const regex = /(gitlab.eccenca.com)|(github.com\/elds\/)/;
 
-    regex = /(gitlab.eccenca.com)|(github.com\/elds\/)/;
+    let additions = [];
 
-    var additions = [];
-
-    dependencies = _.chain(dependencies)
+    return _.chain(dependencies)
+        .clone()
         .map(validateSPDX)
         .map(getURL)
         .map(({name, version, url, license, licenses, path, repository}) => {
-
             let lfc = false;
             let nfc = false;
 
-            const dirList = _.chain(fs.readdirSync(path, 'utf8'))
+            const dirList = _.chain(fs.readdirSync(path, 'utf8'));
 
             const noticeFile = dirList
-                .filter((file) => /^notice/i.test(file))
-                .map((file) => join(path, file))
+                .filter(file => /^(notice|patent)/i.test(file))
+                .map(file => join(path, file))
                 .first()
                 .value();
 
-
             const licenseFile = dirList
-                .filter((file) => /^license/i.test(file))
-                .map((file) => join(path, file))
+                .filter(file => /^(license|copying)/i.test(file))
+                .map(file => join(path, file))
                 .first()
                 .value();
 
             const additionalLicenses = dirList
-                .filter((file) => /^additionalLicenses\.yml/i.test(file))
-                .map((file) => join(path, file))
+                .filter(file => /^additionalLicenses\.yml/i.test(file))
+                .map(file => join(path, file))
                 .first()
                 .value();
-
 
             if (_.isString(noticeFile)) {
                 nfc = getContentsSync(noticeFile);
@@ -131,14 +134,14 @@ export const cleanUpDependencies = (dependencies, {regex, warnings, color} = {})
             }
 
             if (_.isString(additionalLicenses)) {
-
                 try {
-                    const {dependencies} = loadReportFromFile(additionalLicenses, true);
-                    additions = _.concat(additions, dependencies);
+                    const {
+                        dependencies: additionalDependencies,
+                    } = loadReportFromFile(additionalLicenses, true);
+                    additions = _.concat(additions, additionalDependencies);
                 } catch (e) {
                     console.warn(e);
                 }
-
             }
 
             return {
@@ -151,55 +154,57 @@ export const cleanUpDependencies = (dependencies, {regex, warnings, color} = {})
                 url,
                 repository,
             };
-
         })
-        .thru(function(value) {
-            return _.concat(value, additions)
-        })
+        .thru(value => _.concat(value, additions))
         .reject(excludeRepositories.bind(null, regex))
         .sortBy('name', 'version')
         .value();
-
-    return dependencies;
-
 };
 
 export const loadReportFromFile = (file, failOkay = false, options = {}) => {
-
     if (failOkay) {
         try {
             fs.accessSync(file, fs.F_OK);
         } catch (e) {
-            const {language = 'javascript', description = 'description', project = 'Project'} = options;
+            const {
+                language = 'javascript',
+                description = 'description',
+                project = 'Project',
+            } = options;
             return {project, language, description, dependencies: []};
         }
     }
 
+    let report;
+
     try {
-        file = fs.readFileSync(file, 'utf8');
+        report = fs.readFileSync(file, 'utf8');
     } catch (e) {
         throw new Error(`Could not load ${file}`);
     }
 
-    return loadReportFromYAML(file);
-
+    return loadReportFromYAML(report);
 };
 
-export const loadReportFromYAML = (yamlString) => {
+export const loadReportFromYAML = yamlString => {
+    let yamlData;
     try {
-        yamlString = yaml.load(yamlString, 'utf8');
+        yamlData = yaml.load(yamlString, 'utf8');
     } catch (e) {
         throw new Error(`Could not load ${yamlString}`);
     }
 
-    if (_.keys(yamlString) > 1) {
-        throw new Error(`${yamlString} should just contain 1 project, it contains ${_.keys(yamlString)}`);
+    if (_.keys(yamlData) > 1) {
+        throw new Error(
+            `${yamlData} should just contain 1 project, it contains ${_.keys(
+                yamlData
+            )}`
+        );
     }
 
-    const project = _.first(_.keys(yamlString));
+    const project = _.first(_.keys(yamlData));
 
-    const {language, description, dependencies} = _.sample(yamlString);
+    const {language, description, dependencies} = _.sample(yamlData);
 
     return {project, language, description, dependencies};
-
 };
