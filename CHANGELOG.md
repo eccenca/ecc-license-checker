@@ -4,6 +4,10 @@ This project adheres to [Semantic Versioning](http://semver.org/) and [Keep A Ch
 
 ## [Unreleased]
 
+### Added
+- Read files starting with `patent` (case insensitive) as notice files.
+- Read files starting with `copying` (case insensitive) as license files.
+
 ### Changed
 - Update spdx license list to version 2.6
 

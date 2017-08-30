@@ -108,13 +108,13 @@ export const cleanUpDependencies = dependencies => {
             const dirList = _.chain(fs.readdirSync(path, 'utf8'));
 
             const noticeFile = dirList
-                .filter(file => /^notice/i.test(file))
+                .filter(file => /^(notice|patent)/i.test(file))
                 .map(file => join(path, file))
                 .first()
                 .value();
 
             const licenseFile = dirList
-                .filter(file => /^license/i.test(file))
+                .filter(file => /^(license|copying)/i.test(file))
                 .map(file => join(path, file))
                 .first()
                 .value();
