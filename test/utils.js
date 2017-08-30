@@ -26,13 +26,20 @@ const dependencies = [
     {
         repository: false,
     },
+    {
+        name: 'ecc-utils',
+        repository: {
+            type: 'git',
+            url: 'https://github.com/eccenca/ecc-utils.git',
+        },
+    },
 ];
 
 describe('utility functions', () => {
     describe('excludeRepositories', () => {
         const testFn1 = excludeRepositories.bind(
             null,
-            /(gitlab.eccenca.com)|(github.com\/elds\/)/
+            /(gitlab.eccenca.com)|(github.com\/elds\/)|(github.com\/eccenca\/)/
         );
         const testFn2 = excludeRepositories.bind(null, /git@gitlab/);
 
@@ -40,6 +47,7 @@ describe('utility functions', () => {
             should(testFn1(dependencies[0])).be.true();
             should(testFn1(dependencies[1])).be.true();
             should(testFn1(dependencies[2])).be.true();
+            should(testFn1(dependencies[7])).be.true();
         });
         it('should include non-eccenca dependencies (gitlab/gh)', () => {
             should(testFn1(dependencies[3])).be.false();

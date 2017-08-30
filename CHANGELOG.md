@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/) and [Keep A Changelog's Format](http://keepachangelog.com/).
 
+## [2.6.2] 2017-08-30
+
+### Fixed
+- Exclusion function now also checks repository objects
+
 ## [2.6.1] 2017-08-30
 
 ### Fixed
