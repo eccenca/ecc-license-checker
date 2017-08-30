@@ -93,7 +93,7 @@ const getContentsSync = file => {
 };
 
 export const cleanUpDependencies = dependencies => {
-    const regex = /(gitlab.eccenca.com)|(github.com\/elds\/)/;
+    const regex = /(gitlab.eccenca.com)|(github.com\/elds\/)|(github.com\/eccenca\/)/;
 
     let additions = [];
 
