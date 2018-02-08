@@ -117,7 +117,17 @@ const cleanUpDependencies = dependencies => {
         .clone()
         .map(validateSPDX)
         .map(getURL)
-        .map(({name, version, url, license, licenses, path, repository}) => {
+        .map(reported => {
+            const {
+                name,
+                version,
+                url,
+                license,
+                licenses,
+                path,
+                repository,
+            } = reported;
+
             let lfc = false;
             let nfc = false;
 
@@ -245,14 +255,12 @@ const report = ({directory, warnings}, cb) => {
         {
             start: directory,
             customFormat: {
-                name: '',
-                version: '',
-                license: false,
-                licenses: false,
-                _resolved: false,
-                repository: false,
-                homepage: false,
-                path: false,
+                name: true,
+                version: true,
+                license: true,
+                repository: true,
+                homepage: true,
+                path: true,
             },
             production: true,
             development: false,

@@ -2163,7 +2163,7 @@ Project:
         SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       noticeFile: false
     - name: license-checker
-      version: 8.0.4
+      version: 9.0.3
       url: 'https://github.com/davglass/license-checker#readme'
       spdx: BSD-3-Clause
       guessedLicense: BSD-3-Clause

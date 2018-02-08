@@ -11,7 +11,7 @@
     "command-line-usage": "^4.1.0",
     "inquirer": "^5.1.0",
     "js-yaml": "^3.9.1",
-    "license-checker": "^8.0.3",
+    "license-checker": "^16.0.0",
     "lodash": "^4.17.4",
     "mkdirp": "^0.5.1",
     "spdx": "^0.5.1"
