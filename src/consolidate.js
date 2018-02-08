@@ -285,34 +285,36 @@ const curateList = ({removed, added, curatedDependencies}, file) => {
         const {name} = deleteCandidate;
         const replacementCandidates = _.filter(added, {name});
 
-        return replacePrompt(
-            deleteCandidate,
-            replacementCandidates
-        ).then(({deleteFromCurated, replaceWith}) => {
-            if (deleteFromCurated) {
-                curatedDependencies = _.without(
-                    curatedDependencies,
-                    deleteCandidate
-                );
-                added = _.without(added, replaceWith);
+        return replacePrompt(deleteCandidate, replacementCandidates).then(
+            ({deleteFromCurated, replaceWith}) => {
+                if (deleteFromCurated) {
+                    curatedDependencies = _.without(
+                        curatedDependencies,
+                        deleteCandidate
+                    );
+                    added = _.without(added, replaceWith);
+                }
+
+                if (replaceWith) {
+                    replaceWith = _.pick(replaceWith, ['name', 'version']);
+                    const newEntry = _.chain(deleteCandidate)
+                        .assign(replaceWith)
+                        .pick(propsWhitelist)
+                        .value();
+
+                    curatedDependencies = _.concat(
+                        curatedDependencies,
+                        newEntry
+                    );
+                }
+
+                removed = _.without(removed, deleteCandidate);
+
+                dumpFile(curatedDependencies, file);
+
+                return curateList({removed, added, curatedDependencies}, file);
             }
-
-            if (replaceWith) {
-                replaceWith = _.pick(replaceWith, ['name', 'version']);
-                const newEntry = _.chain(deleteCandidate)
-                    .assign(replaceWith)
-                    .pick(propsWhitelist)
-                    .value();
-
-                curatedDependencies = _.concat(curatedDependencies, newEntry);
-            }
-
-            removed = _.without(removed, deleteCandidate);
-
-            dumpFile(curatedDependencies, file);
-
-            return curateList({removed, added, curatedDependencies}, file);
-        });
+        );
     }
 
     if (_.size(added) > 0) {
@@ -401,7 +403,7 @@ const consolidate = ({inputFile, outputFile}) => {
     }
 };
 
-export default () => {
+export default argv => {
     const args = [
         {
             name: 'inputFile',
@@ -423,7 +425,7 @@ export default () => {
         {name: 'help', alias: 'h', description: 'Print help', type: Boolean},
     ];
 
-    const options = commandLineArgs(args);
+    const options = commandLineArgs(args, {argv});
 
     const {help, outputFile, inputFile} = options;
 

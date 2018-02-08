@@ -54,7 +54,7 @@ export const report = ({directory, warnings}, cb) => {
     );
 };
 
-export default () => {
+export default argv => {
     const args = [
         {name: 'help', alias: 'h', description: 'Print help', type: Boolean},
         {
@@ -101,7 +101,7 @@ export default () => {
         },
     ];
 
-    const options = commandLineArgs(args);
+    const options = commandLineArgs(args, {argv});
 
     if (options.help) {
         const getUsage = require('command-line-usage');
