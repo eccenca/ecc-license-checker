@@ -1,0 +1,49 @@
+Example:
+  description: OSS dependencies
+  language: javascript
+  dependencies:
+    - name: argparse
+      version: 1.0.9
+      url: 'https://github.com/nodeca/argparse'
+      spdx: MIT
+      licenseFile: >
+        (The MIT License)
+
+    - name: asap
+      version: 2.0.6
+      url: 'https://github.com/kriskowal/asap#readme'
+      spdx: MIT
+    - name: ua-parser-js
+      version: 0.7.17
+      url: 'http://github.com/faisalman/ua-parser-js'
+      licenses:
+        - name: (GPL-2.0 OR MIT)
+          url: >-
+            https://raw.githubusercontent.com/faisalman/ua-parser-js/0.7.11/readme.md
+    - name: vis
+      version: 4.20.0
+      url: 'http://visjs.org/'
+      spdx: Apache-2.0
+      licenses:
+        - name: (MIT OR Apache-2.0)
+          url: 'https://raw.githubusercontent.com/almende/vis/v4.20.0/README.md'
+        - name: MIT
+          url: 'https://raw.githubusercontent.com/almende/vis/v4.20.0/LICENSE-MIT'
+        - name: Apache 2.0
+          url: >-
+            https://raw.githubusercontent.com/almende/vis/v4.20.0/LICENSE-APACHE-2.0
+    - name: warning
+      version: 3.0.0
+      url: 'https://github.com/BerkeleyTrue/warning'
+      spdx: BSD-3-Clause
+      licenseFile: >
+        ---
+
+        BSD License
+    - name: whatwg-fetch
+      version: 2.0.3
+      url: 'https://github.com/github/fetch#readme'
+      spdx: MIT
+      licenseFile: |
+        ---
+        Copyright (c) 2014-2016 GitHub, Inc.

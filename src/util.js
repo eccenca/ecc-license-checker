@@ -291,7 +291,7 @@ const groupDependencies = dependencies =>
             }
 
             if (!_.has(result, licenseName)) {
-                _.set(result, licenseName, {
+                _.set(result, [licenseName], {
                     name: licenseName,
                     url: licenseUrl,
                     pkgs: [],
