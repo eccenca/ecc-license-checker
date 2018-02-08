@@ -1,9 +1,9 @@
-import path from 'path';
+const path = require('path');
 
-import should from 'should';
-import _ from 'lodash';
+const should = require('should');
+const _ = require('lodash');
 
-import {report} from '../src/report';
+const {report} = require('../index');
 
 describe('report functions', () => {
     it('successful report', done => {

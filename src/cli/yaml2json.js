@@ -1,62 +1,12 @@
-import fs from 'fs';
-import {dirname} from 'path';
+const fs = require('fs');
+const {dirname} = require('path');
 
-import _ from 'lodash';
-import commandLineArgs from 'command-line-args';
+const _ = require('lodash');
+const commandLineArgs = require('command-line-args');
 
-import {loadReportFromFile, loadReportFromYAML} from './util';
+const {loadReportFromFile, groupDependencies} = require('../util');
 
-import {spdxLicenseList} from './spdx-list';
-
-const groupDependencies = dependencies =>
-    _.chain(dependencies)
-        .reduce((result, {spdx = false, licenses, name, url}) => {
-            let licenseUrl;
-            let licenseName;
-
-            if (!spdx || _.startsWith(spdx, '(')) {
-                licenseName = _.first(licenses).name;
-                licenseUrl = _.first(licenses).url;
-            } else if (_.startsWith(spdx, '(')) {
-                licenseName = spdx;
-                licenseUrl = _.first(licenses).url;
-            } else {
-                licenseName = _.find(spdxLicenseList, {licenseId: spdx}).name;
-                licenseUrl = `https://spdx.org/licenses/${spdx}.html`;
-            }
-
-            if (!_.has(result, licenseName)) {
-                // eslint-disable-next-line
-                result[licenseName] = {
-                    name: licenseName,
-                    url: licenseUrl,
-                    pkgs: [],
-                };
-            }
-
-            let pkgs = _.get(result, [licenseName, 'pkgs']);
-
-            pkgs = _.chain(pkgs)
-                .concat({name, url})
-                .sortBy('name')
-                .uniqBy('name')
-                .value();
-
-            _.set(result, [licenseName, 'pkgs'], pkgs);
-
-            return result;
-        }, {})
-        .values()
-        .sortBy(['name'])
-        .value();
-
-export const yaml2json = yamlString => {
-    let {dependencies} = loadReportFromYAML(yamlString);
-    dependencies = groupDependencies(dependencies);
-    return JSON.stringify(dependencies);
-};
-
-export default () => {
+module.exports = argv => {
     const args = [
         {name: 'help', alias: 'h', description: 'Print help', type: Boolean},
         {
@@ -79,7 +29,7 @@ export default () => {
         },
     ];
 
-    const options = commandLineArgs(args);
+    const options = commandLineArgs(args, {argv});
 
     if (options.help) {
         const getUsage = require('command-line-usage');

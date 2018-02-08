@@ -1,32 +1,46 @@
-import fs from 'fs';
-import {join} from 'path';
+const fs = require('fs');
+const {join} = require('path');
 
-import _ from 'lodash';
-import {valid as validSPDX} from 'spdx';
-import yaml from 'js-yaml';
+const _ = require('lodash');
+const validSPDX = require('spdx').valid;
+const yaml = require('js-yaml');
+const checker = require('license-checker');
+const {spdxLicenseList} = require('./spdx-list');
 
-export const formatDependency = ({
-    name,
-    version,
-    url,
-    spdx,
-    licenseFile,
-    noticeFile,
-    ...otherProps
-}) => ({
-    name,
-    version,
-    url,
-    spdx,
-    ...otherProps,
-    licenseFile,
-    noticeFile,
-});
+const formatDependency = dependency => {
+    const {
+        name,
+        version,
+        url,
+        spdx,
+        licenseFile,
+        noticeFile,
+        // ...otherProps
+    } = dependency;
 
-export const formatResultObject = (
-    dependencies,
-    {title, description, language}
-) => {
+    return _.extend(
+        {},
+        {
+            name,
+            version,
+            url,
+            spdx,
+        },
+        _.omit(dependency, [
+            'name',
+            'version',
+            'url',
+            'licenseFile',
+            'noticeFile',
+        ]),
+        {
+            licenseFile,
+            noticeFile,
+        }
+    );
+};
+
+const formatResultObject = (dependencies, {title, description, language}) => {
     const result = {};
 
     const deps = _.chain(dependencies)
@@ -44,13 +58,13 @@ export const formatResultObject = (
     return result;
 };
 
-export const excludeRepositories = (excludeRepositoryRegex, module) => {
+const excludeRepositories = (excludeRepositoryRegex, module) => {
     const repository = _.get(module, 'repository.url', module.repository);
 
     return _.isString(repository) && excludeRepositoryRegex.test(repository);
 };
 
-export const checkDependency = module => {
+const checkDependency = module => {
     const {name, version} = module;
     if (!_.isString(name) || _.isEmpty(name)) {
         throw new Error('Name is missing');
@@ -60,17 +74,17 @@ export const checkDependency = module => {
     }
 };
 
-export const validateSPDX = module => {
+const validateSPDX = module => {
     const {license} = module;
 
     if (_.isString(license) && validSPDX(license)) {
-        return {...module, spdx: license};
+        return _.extend({}, module, {spdx: license});
     }
 
     return module;
 };
 
-export const getURL = module => {
+const getURL = module => {
     const {name, homepage, repository} = module;
 
     let url = homepage || _.get(repository, 'url', repository);
@@ -79,7 +93,7 @@ export const getURL = module => {
         url = `https://www.npmjs.com/package/${name}`;
     }
 
-    return {...module, url};
+    return _.extend({}, module, {url});
 };
 
 const getContentsSync = file => {
@@ -94,7 +108,7 @@ const getContentsSync = file => {
     return false;
 };
 
-export const cleanUpDependencies = dependencies => {
+const cleanUpDependencies = dependencies => {
     const regex = /(gitlab.eccenca.com)|(github.com\/elds\/)|(github.com\/eccenca\/)/;
 
     let additions = [];
@@ -103,7 +117,17 @@ export const cleanUpDependencies = dependencies => {
         .clone()
         .map(validateSPDX)
         .map(getURL)
-        .map(({name, version, url, license, licenses, path, repository}) => {
+        .map(reported => {
+            const {
+                name,
+                version,
+                url,
+                license,
+                licenses,
+                path,
+                repository,
+            } = reported;
+
             let lfc = false;
             let nfc = false;
 
@@ -163,7 +187,7 @@ export const cleanUpDependencies = dependencies => {
         .value();
 };
 
-export const loadReportFromFile = (file, failOkay = false, options = {}) => {
+const loadReportFromFile = (file, failOkay = false, options = {}) => {
     if (failOkay) {
         try {
             fs.accessSync(file, fs.F_OK);
@@ -188,7 +212,7 @@ export const loadReportFromFile = (file, failOkay = false, options = {}) => {
     return loadReportFromYAML(report);
 };
 
-export const loadReportFromYAML = yamlString => {
+const loadReportFromYAML = yamlString => {
     let yamlData;
     try {
         yamlData = yaml.load(yamlString, 'utf8');
@@ -209,4 +233,108 @@ export const loadReportFromYAML = yamlString => {
     const {language, description, dependencies} = _.sample(yamlData);
 
     return {project, language, description, dependencies};
+};
+
+const report = ({directory, warnings}, cb) => {
+    const pjson = join(directory, 'package.json');
+    const nmodules = join(directory, 'node_modules');
+
+    if (!fs.statSync(directory).isDirectory()) {
+        throw new Error('input directory is not a directory');
+    }
+    if (!fs.statSync(pjson).isFile()) {
+        throw new Error('input directory does not contain a package.json');
+    }
+    if (!fs.statSync(nmodules).isDirectory()) {
+        throw new Error(
+            'input directory does not contain node_modules folder, did you run npm install?'
+        );
+    }
+
+    checker.init(
+        {
+            start: directory,
+            customFormat: {
+                name: true,
+                version: true,
+                license: true,
+                repository: true,
+                homepage: true,
+                path: true,
+            },
+            production: true,
+            development: false,
+            color: false,
+        },
+        (err, reportedDependencies) => {
+            if (err) {
+                throw new Error(err);
+            }
+
+            const dependencies = cleanUpDependencies(reportedDependencies, {
+                warnings,
+            });
+
+            cb(dependencies);
+        }
+    );
+};
+
+const groupDependencies = dependencies =>
+    _.chain(dependencies)
+        .reduce((result, x) => {
+            const {spdx = false, licenses, name, url} = x;
+            let licenseUrl;
+            let licenseName;
+
+            if (!spdx || _.startsWith(spdx, '(')) {
+                licenseName = _.first(licenses).name;
+                licenseUrl = _.first(licenses).url;
+            } else if (_.startsWith(spdx, '(')) {
+                licenseName = spdx;
+                licenseUrl = _.first(licenses).url;
+            } else {
+                licenseName = _.find(spdxLicenseList, {licenseId: spdx}).name;
+                licenseUrl = `https://spdx.org/licenses/${spdx}.html`;
+            }
+
+            if (!_.has(result, licenseName)) {
+                _.set(result, [licenseName], {
+                    name: licenseName,
+                    url: licenseUrl,
+                    pkgs: [],
+                });
+            }
+
+            let pkgs = _.get(result, [licenseName, 'pkgs']);
+
+            pkgs = _.chain(pkgs)
+                .concat({name, url})
+                .sortBy('name')
+                .uniqBy('name')
+                .value();
+
+            _.set(result, [licenseName, 'pkgs'], pkgs);
+
+            return result;
+        }, {})
+        .values()
+        .sortBy(['name'])
+        .value();
+
+const yaml2json = yamlString => {
+    let {dependencies} = loadReportFromYAML(yamlString);
+    dependencies = groupDependencies(dependencies);
+    return JSON.stringify(dependencies);
+};
+
+module.exports = {
+    loadReportFromFile,
+    checkDependency,
+    excludeRepositories,
+    formatResultObject,
+    formatDependency,
+    report,
+    yaml2json,
+    groupDependencies,
 };

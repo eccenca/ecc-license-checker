@@ -1,21 +1,20 @@
-'use strict';
+const reportCMD = require('./src/cli/report');
 
-var _report = require('./lib/report');
+const yaml2jsonCMD = require('./src/cli/yaml2json');
 
-var _yaml2json = require('./lib/yaml2json');
+const spdxList = require('./src/spdx-list');
 
-var _spdxList = require('./lib/spdx-list');
+const consolidateCMD = require('./src/cli/consolidate');
 
-var _consolidate = require('./lib/consolidate');
+const {report, yaml2json} = require('./src/util');
 
 module.exports = {
-    __esModule: true,
-    report: _report.report,
-    yaml2json: _yaml2json.yaml2json,
-    spdxLicenseList: _spdxList.spdxLicenseList,
+    report,
+    yaml2json,
+    spdxLicenseList: spdxList.spdxLicenseList,
     commands: {
-        reportCMD: _report.default,
-        consolidateCMD: _consolidate,
-        yaml2jsonCMD: _yaml2json.default
-    }
+        reportCMD,
+        consolidateCMD,
+        yaml2jsonCMD,
+    },
 };

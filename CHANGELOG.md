@@ -2,6 +2,15 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/) and [Keep A Changelog's Format](http://keepachangelog.com/).
 
+## [2.7.0] 2018-02-09
+
+### Changed
+- Updated dependencies
+- Removed unnecessary babel workflow
+
+### Added
+- Tests
+
 ## [2.6.2] 2017-08-30
 
 ### Fixed

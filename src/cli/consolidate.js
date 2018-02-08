@@ -1,16 +1,20 @@
-import fs from 'fs';
-import {dirname} from 'path';
+const fs = require('fs');
+const dirname = require('path').dirname;
 
-import _ from 'lodash';
-import yaml from 'js-yaml';
-import clear from 'clear';
-import spdxCheck from 'spdx';
-import Table from 'cli-table';
-import commandLineArgs from 'command-line-args';
+const _ = require('lodash');
+const yaml = require('js-yaml');
+const clear = require('clear');
+const spdxCheck = require('spdx');
+const Table = require('cli-table');
+const commandLineArgs = require('command-line-args');
 
-import inquirer from 'inquirer';
+const inquirer = require('inquirer');
 
-import {loadReportFromFile, formatResultObject, formatDependency} from './util';
+const {
+    loadReportFromFile,
+    formatResultObject,
+    formatDependency,
+} = require('../util');
 
 const propsWhitelist = [
     'name',
@@ -112,20 +116,18 @@ const addPrompt = additionCandidate => {
     const {
         name,
         version,
-        url,
         noticeFile,
         guessedLicense = '---',
         spdx = '---',
         licenseFile = false,
-        ...otherProps
     } = additionCandidate;
 
-    const newEntry = {
-        name,
-        version,
-        url,
-        ...otherProps,
-    };
+    const newEntry = _.omit(additionCandidate, [
+        'noticeFile',
+        'guessedLicense',
+        'spdx',
+        'licenseFile',
+    ]);
 
     let message = '';
 
@@ -285,34 +287,36 @@ const curateList = ({removed, added, curatedDependencies}, file) => {
         const {name} = deleteCandidate;
         const replacementCandidates = _.filter(added, {name});
 
-        return replacePrompt(
-            deleteCandidate,
-            replacementCandidates
-        ).then(({deleteFromCurated, replaceWith}) => {
-            if (deleteFromCurated) {
-                curatedDependencies = _.without(
-                    curatedDependencies,
-                    deleteCandidate
-                );
-                added = _.without(added, replaceWith);
+        return replacePrompt(deleteCandidate, replacementCandidates).then(
+            ({deleteFromCurated, replaceWith}) => {
+                if (deleteFromCurated) {
+                    curatedDependencies = _.without(
+                        curatedDependencies,
+                        deleteCandidate
+                    );
+                    added = _.without(added, replaceWith);
+                }
+
+                if (replaceWith) {
+                    replaceWith = _.pick(replaceWith, ['name', 'version']);
+                    const newEntry = _.chain(deleteCandidate)
+                        .assign(replaceWith)
+                        .pick(propsWhitelist)
+                        .value();
+
+                    curatedDependencies = _.concat(
+                        curatedDependencies,
+                        newEntry
+                    );
+                }
+
+                removed = _.without(removed, deleteCandidate);
+
+                dumpFile(curatedDependencies, file);
+
+                return curateList({removed, added, curatedDependencies}, file);
             }
-
-            if (replaceWith) {
-                replaceWith = _.pick(replaceWith, ['name', 'version']);
-                const newEntry = _.chain(deleteCandidate)
-                    .assign(replaceWith)
-                    .pick(propsWhitelist)
-                    .value();
-
-                curatedDependencies = _.concat(curatedDependencies, newEntry);
-            }
-
-            removed = _.without(removed, deleteCandidate);
-
-            dumpFile(curatedDependencies, file);
-
-            return curateList({removed, added, curatedDependencies}, file);
-        });
+        );
     }
 
     if (_.size(added) > 0) {
@@ -401,7 +405,7 @@ const consolidate = ({inputFile, outputFile}) => {
     }
 };
 
-export default () => {
+module.exports = argv => {
     const args = [
         {
             name: 'inputFile',
@@ -423,7 +427,7 @@ export default () => {
         {name: 'help', alias: 'h', description: 'Print help', type: Boolean},
     ];
 
-    const options = commandLineArgs(args);
+    const options = commandLineArgs(args, {argv});
 
     const {help, outputFile, inputFile} = options;
 

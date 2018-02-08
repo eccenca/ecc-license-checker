@@ -1,5 +1,11 @@
-const json = require('../data/licenses.json');
+const {
+    licenses,
+    licenseListVersion,
+    releaseDate,
+} = require('../data/licenses.json');
 
-const {licenses, licenseListVersion, releaseDate} = json;
-
-export {licenses as spdxLicenseList, licenseListVersion, releaseDate};
+module.exports = {
+    spdxLicenseList: licenses,
+    licenseListVersion,
+    releaseDate,
+};
