@@ -11,7 +11,7 @@ describe('report functions', () => {
             path.join(__dirname, 'assets', 'yaml2json.yml')
         );
         const json = JSON.parse(yaml2json(yaml));
-        
+
         should(json)
             .be.Array()
             .and.have.length(4);
