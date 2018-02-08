@@ -328,5 +328,5 @@ module.exports = {
     formatDependency,
     report,
     yaml2json,
-    groupDependencies
+    groupDependencies,
 };

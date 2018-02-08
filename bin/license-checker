@@ -11,27 +11,25 @@ var command = clc.command;
 var argv = clc.argv;
 
 switch (command) {
-case 'consolidate':
-    checker.commands.consolidateCMD(argv);
-    break;
-case 'report':
-    checker.commands.reportCMD(argv);
-    break;
-case 'yaml2json':
-    checker.commands.yaml2jsonCMD(argv);
-    break;
-case null:
-default:
-    defaultCommand();
+    case 'consolidate':
+        checker.commands.consolidateCMD(argv);
+        break;
+    case 'report':
+        checker.commands.reportCMD(argv);
+        break;
+    case 'yaml2json':
+        checker.commands.yaml2jsonCMD(argv);
+        break;
+    case null:
+    default:
+        defaultCommand();
 }
-
 
 // default command if
 function defaultCommand() {
-
     var args = [
         {name: 'version', type: Boolean, description: 'Print version number'},
-        {name: 'help', type: Boolean, alias: 'h', description: 'Print help'}
+        {name: 'help', type: Boolean, alias: 'h', description: 'Print help'},
     ];
 
     var options = commandLineArgs(args);
@@ -39,48 +37,49 @@ function defaultCommand() {
     if (options.version) {
         console.log(require('../package.json').version);
     } else {
-
         var getUsage = require('command-line-usage');
 
         var sections = [
             {
                 header: 'Eccenca License Checker',
-                content: 'Several Helper Tools for dealing with licenses of dependencies (especially javascript dependencies).'
+                content:
+                    'Several Helper Tools for dealing with licenses of dependencies (especially javascript dependencies).',
             },
             {
                 header: 'Synopsis',
                 content: [
                     '$ license-checker [--help] [--version]',
                     '$ license-checker [command] [options]',
-                    '$ license-checker [command] --help'
-                ]
+                    '$ license-checker [command] --help',
+                ],
             },
             {
                 header: 'Options',
-                optionList: args
+                optionList: args,
             },
             {
                 header: 'Commands',
                 content: [
                     {
                         colA: '[bold]{report}',
-                        colB: 'Create a report of currently installed npm production dependencies in yaml format.'
+                        colB:
+                            'Create a report of currently installed npm production dependencies in yaml format.',
                     },
                     {
                         colA: '[bold]{consolidate}',
-                        colB: 'Consolidate an existing report with currently installed dependencies.'
+                        colB:
+                            'Consolidate an existing report with currently installed dependencies.',
                     },
                     {
                         colA: '[bold]{yaml2json}',
-                        colB: 'Convert a yaml report into a json report grouped by license'
+                        colB:
+                            'Convert a yaml report into a json report grouped by license',
                     },
                 ],
-            }
+            },
         ];
 
         var usage = getUsage(sections);
-        console.log(usage)
-
+        console.log(usage);
     }
-
 }

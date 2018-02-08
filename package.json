@@ -24,13 +24,13 @@
     "prettier": "^1.6.1",
     "should": "^12.0.0"
   },
-  "main": "./es5/index.js",
+  "main": "./index.js",
   "bin": {
     "ecc-license-checker": "./bin/license-checker"
   },
   "scripts": {
     "test": "mocha",
-    "lint": "eslint --ignore-path .gitignore '**/*/*.js' --fix",
+    "lint": "eslint  --fix --ignore-path .gitignore '**/*.js' 'bin/license-checker'",
     "download-spdx": "curl 'https://spdx.org/licenses/licenses.json' --no-buffer > temp.json",
     "spdx": "npm run download-spdx && jq . temp.json > data/licenses.json && rm -f temp.json",
     "prepare": "npm run test"

@@ -15,6 +15,6 @@ module.exports = {
     commands: {
         reportCMD,
         consolidateCMD,
-        yaml2jsonCMD
-    }
+        yaml2jsonCMD,
+    },
 };
