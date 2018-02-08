@@ -1,6 +1,6 @@
-import should from 'should';
+const should = require('should');
 
-import {excludeRepositories, checkDependency} from '../src/util';
+const {excludeRepositories, checkDependency} = require('../src/util');
 
 const dependencies = [
     {

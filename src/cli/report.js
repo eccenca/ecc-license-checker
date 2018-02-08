@@ -1,60 +1,12 @@
-import fs from 'fs';
-import {join, dirname} from 'path';
+const fs = require('fs');
+const {dirname} = require('path');
 
-import commandLineArgs from 'command-line-args';
-import yaml from 'js-yaml';
-import checker from 'license-checker';
+const commandLineArgs = require('command-line-args');
+const yaml = require('js-yaml');
 
-import {cleanUpDependencies, formatResultObject} from './util';
+const {formatResultObject, report} = require('../util');
 
-export const report = ({directory, warnings}, cb) => {
-    const pjson = join(directory, 'package.json');
-    const nmodules = join(directory, 'node_modules');
-
-    if (!fs.statSync(directory).isDirectory()) {
-        throw new Error('input directory is not a directory');
-    }
-    if (!fs.statSync(pjson).isFile()) {
-        throw new Error('input directory does not contain a package.json');
-    }
-    if (!fs.statSync(nmodules).isDirectory()) {
-        throw new Error(
-            'input directory does not contain node_modules folder, did you run npm install?'
-        );
-    }
-
-    checker.init(
-        {
-            start: directory,
-            customFormat: {
-                name: '',
-                version: '',
-                license: false,
-                licenses: false,
-                _resolved: false,
-                repository: false,
-                homepage: false,
-                path: false,
-            },
-            production: true,
-            development: false,
-            color: false,
-        },
-        (err, reportedDependencies) => {
-            if (err) {
-                throw new Error(err);
-            }
-
-            const dependencies = cleanUpDependencies(reportedDependencies, {
-                warnings,
-            });
-
-            cb(dependencies);
-        }
-    );
-};
-
-export default argv => {
+module.exports = argv => {
     const args = [
         {name: 'help', alias: 'h', description: 'Print help', type: Boolean},
         {

@@ -1,16 +1,20 @@
-import fs from 'fs';
-import {dirname} from 'path';
+const fs = require('fs');
+const dirname = require('path').dirname;
 
-import _ from 'lodash';
-import yaml from 'js-yaml';
-import clear from 'clear';
-import spdxCheck from 'spdx';
-import Table from 'cli-table';
-import commandLineArgs from 'command-line-args';
+const _ = require('lodash');
+const yaml = require('js-yaml');
+const clear = require('clear');
+const spdxCheck = require('spdx');
+const Table = require('cli-table');
+const commandLineArgs = require('command-line-args');
 
-import inquirer from 'inquirer';
+const inquirer = require('inquirer');
 
-import {loadReportFromFile, formatResultObject, formatDependency} from './util';
+const {
+    loadReportFromFile,
+    formatResultObject,
+    formatDependency,
+} = require('../util');
 
 const propsWhitelist = [
     'name',
@@ -112,20 +116,18 @@ const addPrompt = additionCandidate => {
     const {
         name,
         version,
-        url,
         noticeFile,
         guessedLicense = '---',
         spdx = '---',
         licenseFile = false,
-        ...otherProps
     } = additionCandidate;
 
-    const newEntry = {
-        name,
-        version,
-        url,
-        ...otherProps,
-    };
+    const newEntry = _.omit(additionCandidate, [
+        'noticeFile',
+        'guessedLicense',
+        'spdx',
+        'licenseFile',
+    ]);
 
     let message = '';
 
@@ -403,7 +405,7 @@ const consolidate = ({inputFile, outputFile}) => {
     }
 };
 
-export default argv => {
+module.exports = argv => {
     const args = [
         {
             name: 'inputFile',
