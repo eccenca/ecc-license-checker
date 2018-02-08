@@ -4,7 +4,12 @@ This project adheres to [Semantic Versioning](http://semver.org/) and [Keep A Ch
 
 ## [Unreleased]
 
-TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
+### Changed
+- Updated dependencies
+- Removed unnecessary babel workflow
+
+### Added
+- Tests
 
 ## [2.6.2] 2017-08-30
 
