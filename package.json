@@ -2,7 +2,7 @@
   "name": "ecc-license-checker",
   "description": "Check license info for a package",
   "author": "eccenca GmbH <opensource@eccenca.com> (http://eccenca.com)",
-  "version": "2.7.0",
+  "version": "2.7.1",
   "dependencies": {
     "clear": "0.0.1",
     "cli-table": "^0.3.1",
